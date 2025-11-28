@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.9
 // This is a Skip (https://skip.tools) package.
 import PackageDescription
 
@@ -18,7 +18,7 @@ let package = Package(
     targets: [
         .target(name: "SkipPostHog", dependencies: [
             .product(name: "SkipFoundation", package: "skip-foundation"),
-            .product(name: "PostHog", package: "posthog-ios")
+            .product(name: "PostHog", package: "posthog-ios", condition: .when(platforms: [.macOS, .iOS, .tvOS, .watchOS, .macCatalyst]))
         ], resources: [.process("Resources")], plugins: [.plugin(name: "skipstone", package: "skip")]),
         .testTarget(name: "SkipPostHogTests", dependencies: [
             "SkipPostHog",
