@@ -1,8 +1,215 @@
 # SkipPostHog
 
-This is a free [Skip](https://skip.tools) Swift/Kotlin library project containing the following modules:
+A [Skip](https://skip.tools) interface for integrating PostHog analytics into your cross-platform iOS and Android applications.
 
-SkipPostHog
+## About PostHog
+
+[PostHog](https://posthog.com) is an open-source product analytics platform that helps you understand user behavior, track events, conduct A/B tests, and analyze feature usage. It provides powerful analytics capabilities including event tracking, user identification, feature flags, session recording, and more—all while giving you full control over your data.
+
+
+## Setup
+
+To include this framework in your project, add the following
+dependency to your `Package.swift` file:
+
+```swift
+let package = Package(
+    name: "my-package",
+    products: [
+        .library(name: "MyProduct", targets: ["MyTarget"]),
+    ],
+    dependencies: [
+        .package(url: "https://source.skip.tools/skip-posthog.git", "0.0.0"..<"2.0.0"),
+    ],
+    targets: [
+        .target(name: "MyTarget", dependencies: [
+            .product(name: "SkipPostHog", package: "skip-posthog")
+        ])
+    ]
+)
+```
+
+## Configuration
+
+Initialize PostHog when your app starts, typically in your app's initialization code:
+
+```swift
+import SkipPostHog
+
+PostHogSDK.shared.setup(
+    PostHogConfig(apiKey: "your-api-key")
+)
+```
+
+For self-hosted PostHog instances, specify your custom host:
+
+```swift
+PostHogSDK.shared.setup(
+    PostHogConfig(apiKey: "your-api-key", host: "https://your-posthog-instance.com")
+)
+```
+
+## Usage Examples
+
+### Tracking Events
+
+Capture events to understand what users are doing in your app:
+
+```swift
+// Simple event
+PostHogSDK.shared.capture("button_clicked")
+
+// Event with properties
+PostHogSDK.shared.capture(
+    "purchase_completed",
+    properties: [
+        "product_id": "abc123",
+        "price": 29.99,
+        "currency": "USD"
+    ]
+)
+```
+
+### Identifying Users
+
+Associate events with specific users:
+
+```swift
+// Identify a user
+PostHogSDK.shared.identify("user_12345")
+
+// Identify with user properties
+PostHogSDK.shared.identify(
+    "user_12345",
+    userProperties: [
+        "email": "user@example.com",
+        "plan": "premium",
+        "signup_date": "2024-01-15"
+    ]
+)
+```
+
+### Setting User Properties
+
+Update properties for the current user:
+
+```swift
+PostHogSDK.shared.identify(
+    PostHogSDK.shared.getDistinctId(),
+    userProperties: [
+        "theme_preference": "dark",
+        "notifications_enabled": true
+    ]
+)
+```
+
+### Screen Tracking
+
+Track screen views to understand navigation patterns:
+
+```swift
+PostHogSDK.shared.screen("Home Screen")
+
+// With additional properties
+PostHogSDK.shared.screen(
+    "Product Details",
+    properties: [
+        "product_id": "xyz789",
+        "category": "Electronics"
+    ]
+)
+```
+
+### Aliasing Users
+
+Link anonymous users with identified users:
+
+```swift
+// When a user signs up or logs in
+PostHogSDK.shared.alias("user_12345")
+```
+
+### Feature Flags
+
+Check feature flags to control feature rollouts:
+
+```swift
+// Check if a feature is enabled
+if PostHogSDK.shared.isFeatureEnabled("new_checkout_flow") {
+    // Show new checkout flow
+} else {
+    // Show original checkout flow
+}
+
+// Get feature flag payload
+if let payload = PostHogSDK.shared.getFeatureFlag("experiment_variant") as? String {
+    switch payload {
+    case "control":
+        // Show control variant
+    case "test":
+        // Show test variant
+    default:
+        // Default behavior
+    }
+}
+```
+
+### Resetting User Data
+
+Clear user data when logging out:
+
+```swift
+PostHogSDK.shared.reset()
+```
+
+### Advanced Configuration
+
+Configure additional options during setup:
+
+```swift
+let config = PostHogConfig(
+    apiKey: "your-api-key",
+    host: "https://app.posthog.com"
+)
+
+// Customize capture settings
+config.captureScreenViews = true
+config.captureApplicationLifecycleEvents = true
+config.flushAt = 20
+config.flushIntervalSeconds = 30
+
+PostHogSDK.shared.setup(config)
+```
+
+### Getting the Distinct ID
+
+Retrieve the current user's distinct ID:
+
+```swift
+let distinctId = PostHogSDK.shared.getDistinctId()
+print("Current user ID: \(distinctId)")
+```
+
+## API Compatibility
+
+SkipPostHog provides the same API surface as the PostHog iOS SDK, ensuring a familiar development experience. All methods behave identically on both iOS and Android platforms, allowing you to write once and deploy everywhere.
+
+## Privacy Considerations
+
+PostHog respects user privacy. Make sure to:
+
+- Comply with applicable privacy laws (GDPR, CCPA, etc.)
+- Provide clear privacy policies to your users
+- Only track necessary data
+- Use `PostHogSDK.shared.optOut()` to allow users to opt out of tracking
+
+```swift
+// Allow users to opt out
+PostHogSDK.shared.optOut()
+
+// Re-enable tracking
+PostHogSDK.shared.optIn()
+```
 
 ## Building
 

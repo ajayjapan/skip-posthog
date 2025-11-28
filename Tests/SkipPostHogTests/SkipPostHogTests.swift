@@ -9,21 +9,7 @@ let logger: Logger = Logger(subsystem: "SkipPostHog", category: "Tests")
 
 @available(macOS 13, *)
 final class SkipPostHogTests: XCTestCase {
-
     func testSkipPostHog() throws {
-        logger.log("running testSkipPostHog")
-        XCTAssertEqual(1 + 2, 3, "basic test")
+        PostHogSDK.shared.setup(PostHogConfig(apiKey: ""))
     }
-
-    func testDecodeType() throws {
-        // load the TestData.json file from the Resources folder and decode it into a struct
-        let resourceURL: URL = try XCTUnwrap(Bundle.module.url(forResource: "TestData", withExtension: "json"))
-        let testData = try JSONDecoder().decode(TestData.self, from: Data(contentsOf: resourceURL))
-        XCTAssertEqual("SkipPostHog", testData.testModuleName)
-    }
-
-}
-
-struct TestData : Codable, Hashable {
-    var testModuleName: String
 }
