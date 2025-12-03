@@ -210,6 +210,14 @@ public class PostHogSDK {
         PostHog.capture(event: event, distinctId: distinctId, properties: convertAnyMap(properties), userProperties: convertAnyMap(userProperties), userPropertiesSetOnce: convertAnyMap(userPropertiesSetOnce), groups: convertStringMap(groups), timestamp: timestamp?.kotlin())
         #endif
     }
+  
+    public func screen(_ screenTitle: String, properties: [String: Any]? = nil) {
+        #if !SKIP
+        PostHog.PostHogSDK.shared.screen(screenTitle, properties: properties)
+        #else
+        PostHog.screen(screenTitle: screenTitle, properties: convertAnyMap(properties))
+        #endif
+    }
 
     #if SKIP
     /// Converts the given typed SkipFoundation Dictionary into a Kotlin Map
