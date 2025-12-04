@@ -194,7 +194,7 @@ public class PostHogSDK {
     /// Using identify, you can associate events with specific users. This enables you to gain full insights as to how they're using your product across different sessions, devices, and platforms.
     ///
     /// See: [https://posthog.com/docs/product-analytics/identify](https://posthog.com/docs/product-analytics/identify)
-    public func identify(distinctId: String, userProperties: [String: Any]? = nil, userPropertiesSetOnce: [String: Any]? = nil) {
+    public func identify(_ distinctId: String, userProperties: [String: Any]? = nil, userPropertiesSetOnce: [String: Any]? = nil) {
         #if !SKIP
         PostHog.PostHogSDK.shared.identify(distinctId, userProperties: userProperties, userPropertiesSetOnce: userPropertiesSetOnce)
         #else
