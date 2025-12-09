@@ -194,7 +194,7 @@ public class PostHogSDK {
     /// Using identify, you can associate events with specific users. This enables you to gain full insights as to how they're using your product across different sessions, devices, and platforms.
     ///
     /// See: [https://posthog.com/docs/product-analytics/identify](https://posthog.com/docs/product-analytics/identify)
-    public func identify(distinctId: String, userProperties: [String: Any]? = nil, userPropertiesSetOnce: [String: Any]? = nil) {
+    public func identify(_ distinctId: String, userProperties: [String: Any]? = nil, userPropertiesSetOnce: [String: Any]? = nil) {
         #if !SKIP
         PostHog.PostHogSDK.shared.identify(distinctId, userProperties: userProperties, userPropertiesSetOnce: userPropertiesSetOnce)
         #else
@@ -208,6 +208,14 @@ public class PostHogSDK {
         PostHog.PostHogSDK.shared.capture(event, distinctId: distinctId, properties: properties, userProperties: userProperties, userPropertiesSetOnce: userPropertiesSetOnce, groups: groups, timestamp: timestamp)
         #else
         PostHog.capture(event: event, distinctId: distinctId, properties: convertAnyMap(properties), userProperties: convertAnyMap(userProperties), userPropertiesSetOnce: convertAnyMap(userPropertiesSetOnce), groups: convertStringMap(groups), timestamp: timestamp?.kotlin())
+        #endif
+    }
+  
+    public func screen(_ screenTitle: String, properties: [String: Any]? = nil) {
+        #if !SKIP
+        PostHog.PostHogSDK.shared.screen(screenTitle, properties: properties)
+        #else
+        PostHog.screen(screenTitle: screenTitle, properties: convertAnyMap(properties))
         #endif
     }
 
